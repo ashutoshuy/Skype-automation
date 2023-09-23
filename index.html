@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        /* Styling for the main container */
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Styling for the input field */
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        /* Styling for buttons */
+        button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Styling for information paragraphs */
+        #info p {
+            margin: 5px 0;
+        }
+
+        /* Styling for the phone number display */
+        #phoneNumberDisplay {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+
+
+
+
+    <script>
+        var phoneNumbers = [];  // Array to store entered phone numbers
+        var currentIndex = 0;   // Index to keep track of the current number being called
+
+        function addPhoneNumber() {
+            // Get the phone numbers entered by the user and split them into an array
+            var phoneNumbersInput = document.getElementById("phoneNumber").value.trim();
+
+            // Check if the input is not empty
+            if (phoneNumbersInput !== "") {
+                // Split the input into an array of phone numbers (one per line)
+                var numbersArray = phoneNumbersInput.split('\n');
+
+                // Add each phone number to the array
+                for (var i = 0; i < numbersArray.length; i++) {
+                    phoneNumbers.push(numbersArray[i]);
+                }
+
+                document.getElementById("phoneNumber").value = '';  // Clear the input field
+                displayPhoneNumber();  // Display the entered phone numbers
+            }
+        }
+
+        function displayPhoneNumber() {
+            // Display the current phone number and options (Start/Next)
+            var phoneNumberElement = document.getElementById("phoneNumberDisplay");
+            if (currentIndex < phoneNumbers.length) {
+                phoneNumberElement.innerHTML = phoneNumbers[currentIndex];
+                document.getElementById("startButton").style.display = "block";
+                document.getElementById("nextButton").style.display = "none";
+            } else {
+                phoneNumberElement.innerHTML = "No more phone numbers.";
+                document.getElementById("startButton").style.display = "none";
+                document.getElementById("nextButton").style.display = "none";
+            }
+
+            // Display additional information
+            document.getElementById("totalNumbers").innerHTML = "Total Numbers: " + phoneNumbers.length;
+            document.getElementById("numbersCalled").innerHTML = "Numbers Called: " + currentIndex;
+            document.getElementById("numbersRemaining").innerHTML = "Numbers Remaining: " + (phoneNumbers.length - currentIndex);
+        }
+
+        function startCall() {
+            // Construct the Skype URI and open the Skype call link
+            var skypeUri = 'skype:' + phoneNumbers[currentIndex];
+            window.location.href = skypeUri;
+            currentIndex++;
+            displayPhoneNumber();
+            document.getElementById("startButton").style.display = "none";
+            document.getElementById("nextButton").style.display = "block";            
+        }
+
+        function nextCall() {
+            // Trigger the next call
+            startCall();
+        }
+
+        function executeBatchFile() {
+            // Use an ActiveXObject to run the batch file (for Windows only)
+            var shell = new ActiveXObject("WScript.Shell");
+            shell.run("C:\Users\Deepali\Desktop");
+        }
+    </script>
+</head>
+
+<body>
+
+    <div class="container">
+        <h2>Make Skype Ca1ls</h2>
+        <h3>A simple automation for Calling Multiple Numbers</h3>
+        <div>
+            <!-- Input field for entering phone numbers -->
+            <label for="phoneNumber">Enter Phone Numbers (one per line):</label>
+            <textarea id="phoneNumber" rows="4" cols="50"></textarea><br>
+            <button onclick="addPhoneNumber()">Add Phone Numbers</button>
+
+            <!-- Display additional information -->
+            <div id="info">
+                <p id="totalNumbers">Total Numbers: 0</p>
+                <p id="numbersCalled">Numbers Called: 0</p>
+                <p id="numbersRemaining">Numbers Remaining: 0</p>
+            </div>
+
+            <!-- Display the phone numbers and buttons -->
+            <div id="phoneNumberDisplay"></div>
+        </div>
+        <button id="startButton" onclick="startCall()" style="display:none;">Start Call</button>
+
+        <button id="nextButton" onclick="nextCall()" style="display:none;">Next</button>
+
+    </div>
+
+</body>
+
+</html>
